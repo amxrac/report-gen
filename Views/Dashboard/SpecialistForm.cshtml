@@ -1,0 +1,146 @@
+﻿@using rgproj.ViewModels
+@model SpecialistFormVM
+
+<div class="card">
+    <div class="card-header">
+        <h4>Submit Public Health Specialist Form</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="SpecialistForm" method="post">
+
+            <div class="mb-3">
+                <label asp-for="DateSubmitted" class="form-label">Date</label>
+                <input type="text" class="form-control" id="DateSubmitted" value="@Model.DateSubmitted.ToString("yyyy-MM-dd HH:mm:ss")" readonly />
+                <span asp-validation-for="DateSubmitted" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SubmittedByUser" class="form-label">Submitted By</label>
+                <input asp-for="SubmittedByUser" class="form-control" readonly />
+                <span asp-validation-for="SubmittedByUser" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CaseType" class="form-label">Case Type</label>
+                <select asp-for="CaseType" class="form-select">
+                    <option value="" disabled selected>Select Case Type</option>
+                    <option value="Infectious">Infectious</option>
+                    <option value="Non-infectious">Non-infectious</option>
+                    <option value="Environmental Factor">Environmental Factor</option>
+                    <option value="Foodborne Illness">Foodborne Illness</option>
+                    <option value="Vector-Borne Disease">Vector-Borne Disease</option>
+                </select>
+                <span asp-validation-for="CaseType" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SeverityLevel" class="form-label">Case Severity</label>
+                <select asp-for="SeverityLevel" class="form-select">
+                    <option value="" disabled selected>Select Severity Level</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                    <option value="Critical">Critical</option>
+                </select>
+                <span asp-validation-for="SeverityLevel" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Affected Demographic</label><br />
+                @foreach (var option in Model.DemographicOptions)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="AffectedDemographics"
+                               value="@option.Value"
+                               id="@option.Value"
+                        @(Model.AffectedDemographic.Contains(option.Value) ? "checked" : "") />
+                        <label class="form-check-label" for="@option.Value">
+                            @option.Text
+                        </label>
+                    </div>
+                }
+            </div>
+
+
+            <div class="mb-3">
+                <label asp-for="TransmissionPattern" class="form-label">Transmission Pattern</label>
+                <input asp-for="TransmissionPattern" class="form-control" />
+                <span asp-validation-for="TransmissionPattern" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ExposureHistory" class="form-label">Exposure History</label>
+                <input asp-for="ExposureHistory" class="form-control" />
+                <span asp-validation-for="ExposureHistory" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="LaboratoryFindings" class="form-label">Laboratory Findings</label>
+                <input asp-for="LaboratoryFindings" class="form-control" />
+                <span asp-validation-for="LaboratoryFindings" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Antibiotic Resistance Observed?</label>
+                <div class="form-check">
+                    <input asp-for="AntibioticResistanceObserved" class="form-check-input" type="radio" id="AntibioticResistanceYes" value="true" />
+                    <label class="form-check-label" for="AntibioticResistanceYes">Yes</label>
+                </div>
+                <div class="form-check">
+                    <input asp-for="AntibioticResistanceObserved" class="form-check-input" type="radio" id="AntibioticResistanceNo" value="false" />
+                    <label class="form-check-label" for="AntibioticResistanceNo">No</label>
+                </div>
+                <span asp-validation-for="AntibioticResistanceObserved" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Requires NCDC Notification?</label>
+                <div class="form-check">
+                    <input asp-for="RequiresNCDCNotification" class="form-check-input" type="radio" id="RequiresNCDCYes" value="true" />
+                    <label class="form-check-label" for="RequiresNCDCYes">Yes</label>
+                </div>
+                <div class="form-check">
+                    <input asp-for="RequiresNCDCNotification" class="form-check-input" type="radio" id="RequiresNCDCNo" value="false" />
+                    <label class="form-check-label" for="RequiresNCDCNo">No</label>
+                </div>
+                <span asp-validation-for="RequiresNCDCNotification" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ContainmentMeasures" class="form-label">Containment Strategy</label>
+                <select asp-for="ContainmentMeasures" class="form-select">
+                    <option value="" disabled selected>Select Containment Strategy</option>
+                    <option value="Quarantine">Quarantine</option>
+                    <option value="Isolation">Isolation</option>
+                    <option value="MassVaccination">Mass Vaccination</option>
+                    <option value="PublicAwareness">Public Awareness Campaign</option>
+                    <option value="TravelRestrictions">Travel Restrictions</option>
+                    <option value="ContactTracing">Contact Tracing</option>
+                    <option value="TreatmentProtocols">Treatment Protocols</option>
+                </select>
+                <span asp-validation-for="ContainmentMeasures" class="text-danger"></span>
+            </div>
+
+
+            <div class="mb-3">
+                <label asp-for="SpecialistComments" class="form-label">Specialist Notes and Comments</label>
+                <textarea asp-for="SpecialistComments" class="form-control"></textarea>
+                <span asp-validation-for="SpecialistComments" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Submit Form</button>
+            </div>
+        </form>
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

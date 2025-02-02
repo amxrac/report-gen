@@ -10,5 +10,6 @@ namespace rgproj.Data
         { }
         public DbSet<EnvironmentalistForm> EnvironmentalistForms { get; set; }
         public DbSet<VeterinaryForm> VeterinaryForms { get; set; }
+        public DbSet<SpecialistForm> SpecialistForms { get; set; }
     }
 }

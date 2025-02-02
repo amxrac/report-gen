@@ -57,6 +57,8 @@ namespace rgproj.Controllers
                     return RedirectToAction("HealthWorkerForm");
                 if (roles.Contains("Veterinary Doctor"))
                     return RedirectToAction("VeterinaryForm");
+                if (roles.Contains("Specialist"))
+                    return RedirectToAction("SpecialistForm");
             }
 
             return RedirectToAction("Login", "Account");
@@ -150,6 +152,59 @@ namespace rgproj.Controllers
                 _context.VeterinaryForms.Add(formData);
                 await _context.SaveChangesAsync();
                 TempData["SuccessMessage"] = "Veterinary Form submitted successfully!";
+
+                return RedirectToAction("Index");
+            }
+            foreach (var modelState in ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SpecialistForm()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var model = new SpecialistFormVM
+            {
+                SubmittedByUserId = user.Id,
+                SubmittedByUser = user
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SpecialistForm(SpecialistFormVM model, string? returnUrl = null)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (ModelState.IsValid)
+            {
+                SpecialistForm formData = new()
+                {
+                    DateSubmitted = model.DateSubmitted,
+                    SubmittedByUser = user,
+                    CaseType = model.CaseType,
+                    SeverityLevel = model.SeverityLevel,
+                    AffectedDemographic = string.Join(",", model.AffectedDemographic),
+                    TransmissionPattern = model.TransmissionPattern,
+                    ExposureHistory = model.ExposureHistory,
+                    LaboratoryFindings = model.LaboratoryFindings,
+                    AntibioticResistanceObserved = model.AntibioticResistanceObserved,
+                    RequiresNCDCNotification = model.RequiresNCDCNotification,
+                    ContainmentMeasures = model.ContainmentMeasures,
+                    SpecialistComments = model.SpecialistComments
+                };
+
+                _context.SpecialistForms.Add(formData);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Public Health Specialist Form submitted successfully!";
 
                 return RedirectToAction("Index");
             }

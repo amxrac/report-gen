@@ -5,7 +5,7 @@ namespace rgproj.Models
     public class EnvironmentalistForm
     {
         public int Id { get; set; }
-        public DateTime DateGenerated { get; set; }
+        public DateTime DateSubmitted { get; set; }
         public string? SubmittedByUserId { get; set; }
         public AppUser? SubmittedByUser { get; set; }
 

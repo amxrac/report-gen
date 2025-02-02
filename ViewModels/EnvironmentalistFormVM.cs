@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace rgproj.ViewModels
 {
-    public class EnvironmentalistVM
+    public class EnvironmentalistFormVM
     {
-        public DateTime DateGenerated { get; set; } = DateTime.Now;
+        public DateTime DateSubmitted { get; set; } = DateTime.Now;
         public string? SubmittedByUserId { get; set; }
 
         public AppUser? SubmittedByUser { get; set; }

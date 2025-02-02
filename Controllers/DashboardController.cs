@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.SqlServer.Server;
 using rgproj.Data;
 using rgproj.Models;
 using rgproj.ViewModels;
@@ -34,7 +35,7 @@ namespace rgproj.Controllers
             {
                 ViewBag.RecentForms = _context.EnvironmentalistForms
                     .Where(f => f.SubmittedByUserId == user.Id)
-                    .OrderByDescending(f => f.DateGenerated)
+                    .OrderByDescending(f => f.DateSubmitted)
                     .Take(3)
                     .ToList();
             }
@@ -55,7 +56,7 @@ namespace rgproj.Controllers
                 if (roles.Contains("Health Worker"))
                     return RedirectToAction("HealthWorkerForm");
                 if (roles.Contains("Veterinary Doctor"))
-                    return RedirectToAction("VeterinaryDoctorForm");
+                    return RedirectToAction("VeterinaryForm");
             }
 
             return RedirectToAction("Login", "Account");
@@ -65,7 +66,7 @@ namespace rgproj.Controllers
         public async Task<IActionResult> EnvironmentalistForm()
         {
             var user = await _userManager.GetUserAsync(User);
-            var model = new EnvironmentalistVM
+            var model = new EnvironmentalistFormVM
             {
                 SubmittedByUserId = user.Id,
                 SubmittedByUser = user
@@ -74,15 +75,15 @@ namespace rgproj.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EnvironmentalistForm(EnvironmentalistVM model, string? returnUrl = null)
+        public async Task<IActionResult> EnvironmentalistForm(EnvironmentalistFormVM model, string? returnUrl = null)
         {
             var user = await _userManager.GetUserAsync(User);
 
             if (ModelState.IsValid)
             {
-                EnvironmentalistForm report = new()
+                EnvironmentalistForm formData = new()
                 {
-                    DateGenerated = model.DateGenerated,
+                    DateSubmitted = model.DateSubmitted,
                     SubmittedByUser = user,
                     Location = model.Location,
                     Description = model.Description,
@@ -94,7 +95,7 @@ namespace rgproj.Controllers
                     FollowUpAction = model.FollowUpAction
                 };
 
-                _context.EnvironmentalistForms.Add(report);
+                _context.EnvironmentalistForms.Add(formData);
                 await _context.SaveChangesAsync();
                 TempData["SuccessMessage"] = "Environmentalist Form submitted successfully!";
 
@@ -111,5 +112,59 @@ namespace rgproj.Controllers
 
             return View(model);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> VeterinaryForm()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var model = new VeterinaryFormVM
+            {
+                SubmittedByUserId = user.Id,
+                SubmittedByUser = user
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> VeterinaryForm(VeterinaryFormVM model, string? returnUrl = null)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (ModelState.IsValid)
+            {
+                VeterinaryForm formData = new()
+                {
+                    DateSubmitted = model.DateSubmitted,
+                    SubmittedByUser = user,
+                    AnimalSpecies = model.AnimalSpecies,
+                    HealthStatus = model.HealthStatus,
+                    VaccinationDetails = model.VaccinationDetails,
+                    ClinicalSymptoms = model.ClinicalSymptoms,
+                    PreliminaryDiagnosis = model.PreliminaryDiagnosis,
+                    PotentialZoonoticRisk = model.PotentialZoonoticRisk,
+                    SuspectedDisease = model.SuspectedDisease,
+                    QuarantineRecommended = model.QuarantineRecommended,
+                    FollowUpProtocol = model.FollowUpProtocol
+                };
+
+                _context.VeterinaryForms.Add(formData);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Veterinary Form submitted successfully!";
+
+                return RedirectToAction("Index");
+            }
+            foreach (var modelState in ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+
+            }
+
+            return View(model);
+        }
+
+
     }
 }

@@ -1,5 +1,5 @@
 ﻿@using rgproj.ViewModels;
-@model EnvironmentalistVM;
+@model EnvironmentalistFormVM;
 
 <div class="card">
     <div class="card-header">
@@ -8,9 +8,9 @@
     <div class="card-body">
         <form asp-action="EnvironmentalistForm" method="post">
             <div class="mb-3">
-                <label asp-for="DateGenerated" class="form-label">Date</label>
-                <input type="text" class="form-control" id="DateGenerated" value="@Model.DateGenerated.ToString("yyyy-MM-dd HH:mm:ss")" readonly />
-                <span asp-validation-for="DateGenerated" class="text-danger"></span>
+                <label asp-for="DateSubmitted" class="form-label">Date</label>
+                <input type="text" class="form-control" id="DateSubmitted" value="@Model.DateSubmitted.ToString("yyyy-MM-dd HH:mm:ss")" readonly />
+                <span asp-validation-for="DateSubmitted" class="text-danger"></span>
             </div>
 
             <div class="mb-3">

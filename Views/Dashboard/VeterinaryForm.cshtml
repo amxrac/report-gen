@@ -1,0 +1,109 @@
+﻿@using rgproj.ViewModels
+@model VeterinaryFormVM
+
+<div class="card">
+    <div class="card-header">
+        <h4>Submit New Veterinary Form</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="VeterinaryForm" method="post">
+
+            <div class="mb-3">
+                <label asp-for="DateSubmitted" class="form-label">Date</label>
+                <input type="text" class="form-control" id="DateSubmitted" value="@Model.DateSubmitted.ToString("yyyy-MM-dd HH:mm:ss")" readonly />
+                <span asp-validation-for="DateSubmitted" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SubmittedByUser" class="form-label">Submitted By</label>
+                <input asp-for="SubmittedByUser" class="form-control" readonly />
+                <span asp-validation-for="SubmittedByUser" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="AnimalSpecies" class="form-label">Animal Species</label>
+                <input asp-for="AnimalSpecies" class="form-control" />
+                <span asp-validation-for="AnimalSpecies" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="HealthStatus" class="form-label">Health Status</label>
+                <select asp-for="HealthStatus" class="form-select">
+                    <option value="" disabled selected>Select Health Status</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Compromised">Compromised</option>
+                    <option value="Critical">Critical</option>
+                </select>
+                <span asp-validation-for="HealthStatus" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="VaccinationDetails" class="form-label">Vaccination Records</label>
+                <input asp-for="VaccinationDetails" class="form-control" />
+                <span asp-validation-for="VaccinationDetails" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ClinicalSymptoms" class="form-label">Clinical Symptoms</label>
+                <textarea asp-for="ClinicalSymptoms" class="form-control"></textarea>
+                <span asp-validation-for="ClinicalSymptoms" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PreliminaryDiagnosis" class="form-label">Preliminary Diagnosis</label>
+                <textarea asp-for="PreliminaryDiagnosis" class="form-control"></textarea>
+                <span asp-validation-for="PreliminaryDiagnosis" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Potential Zoonotic Risk?</label>
+                <div class="form-check">
+                    <input asp-for="PotentialZoonoticRisk" class="form-check-input" type="radio" id="PotentialZoonoticRiskYes" value="true" />
+                    <label class="form-check-label" for="PotentialZoonoticRiskYes">Yes</label>
+                </div>
+                <div class="form-check">
+                    <input asp-for="PotentialZoonoticRisk" class="form-check-input" type="radio" id="PotentialZoonoticRiskNo" value="false" />
+                    <label class="form-check-label" for="PotentialZoonoticRiskNo">No</label>
+                </div>
+                <span asp-validation-for="PotentialZoonoticRisk" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SuspectedDisease" class="form-label">Suspected Disease</label>
+                <input asp-for="SuspectedDisease" class="form-control" />
+                <span asp-validation-for="SuspectedDisease" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Quarantine Recommended?</label>
+                <div class="form-check">
+                    <input asp-for="QuarantineRecommended" class="form-check-input" type="radio" id="QuarantineRecommendedYes" value="true" />
+                    <label class="form-check-label" for="QuarantineRecommendedYes">Yes</label>
+                </div>
+                <div class="form-check">
+                    <input asp-for="QuarantineRecommended" class="form-check-input" type="radio" id="QuarantineRecommendedNo" value="false" />
+                    <label class="form-check-label" for="QuarantineRecommendedNo">No</label>
+                </div>
+                <span asp-validation-for="QuarantineRecommended" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="FollowUpProtocol" class="form-label">Follow-Up Protocol</label>
+                <textarea asp-for="FollowUpProtocol" class="form-control"></textarea>
+                <span asp-validation-for="FollowUpProtocol" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Submit Form</button>
+            </div>
+        </form>
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

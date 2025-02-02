@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Health Report System</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/report_gen.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="container-fluid dashboard-wrapper">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <h5 class="navbar-brand">Health Report System</h5>
+                <div class="navbar-nav ms-auto align-items-center">
+                    <span class="navbar-text me-3">Welcome, @ViewBag.UserName</span>
+                    <span class="navbar-text me-3">Role: @ViewBag.UserRole</span>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-flex align-items-center">
+                        <button type="submit" class="btn btn-link p-0 m-0 border-0 text-decoration-none text-secondary">Logout</button>
+                    </form>
+                </div>
+
+            </div>
+        </nav>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="row">
+            <div class="col-md-2 sidebar d-flex flex-column">
+                <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link h5" asp-controller="Dashboard" asp-action="SubmittedForms">Submitted Forms</a>
+                    <a class="nav-link h5" asp-controller="Dashboard" asp-action="SubmitForm">Submit Form</a>
+                </div>
+            </div>
+
+            <div class="col-md-8 main-content">
+                @RenderBody()
+            </div>
+
+            <div class="col-md-2 recent-activities-section">
+                <h5>Recent Activities</h5>
+                @* @if (ViewBag.RecentForms != null && ViewBag.RecentForms.Any()) *@
+                @* { *@
+                @*     <ul class="list-group"> *@
+                @*         @foreach (var form in ViewBag.RecentForms) *@
+                @*         { *@
+                @*             <li class="list-group-item"> *@
+                @*                 <strong>@form.Category</strong> submitted on @form.DateGenerated.ToString("g") *@
+                @*                 <p>@form.Description</p> *@
+                @*             </li> *@
+                @*         } *@
+                @*     </ul> *@
+                @* } *@
+                @* else *@
+                @* { *@
+                @*     <p>No recent submissions</p> *@
+                @* } *@
+            </div>            
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

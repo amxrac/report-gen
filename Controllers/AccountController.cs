@@ -42,11 +42,7 @@ namespace rgproj.Controllers
                 if (result.Succeeded)
                 {
 
-                    if (!await _roleManager.RoleExistsAsync(model.Role))
-                    {
-                        ModelState.AddModelError("", "Invalid role selected.");
-                        return View(model);
-                    }
+                    await _userManager.AddToRoleAsync(user, model.Role);
 
                     await _signInManager.SignInAsync(user, false);
                     return Redirect(returnUrl ?? Url.Action("Index", "Dashboard"));
@@ -96,6 +92,11 @@ namespace rgproj.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
+        }
+
+        public IActionResult ForgotPassword()
+        {
+            return View();
         }
     }
 }

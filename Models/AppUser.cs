@@ -12,5 +12,6 @@ namespace rgproj.Models
 
         [Required]
         public string? Location { get; set; }
+        public DateTime? LastLogin { get; set; }
     }
 }

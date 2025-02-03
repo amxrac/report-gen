@@ -59,6 +59,8 @@ namespace rgproj.Controllers
                     return RedirectToAction("VeterinaryForm");
                 if (roles.Contains("Specialist"))
                     return RedirectToAction("SpecialistForm");
+                if (roles.Contains("HealthOfficerForm"))
+                    return RedirectToAction("HealthOfficerForm");
             }
 
             return RedirectToAction("Login", "Account");
@@ -205,6 +207,59 @@ namespace rgproj.Controllers
                 _context.SpecialistForms.Add(formData);
                 await _context.SaveChangesAsync();
                 TempData["SuccessMessage"] = "Public Health Specialist Form submitted successfully!";
+
+                return RedirectToAction("Index");
+            }
+            foreach (var modelState in ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.ErrorMessage);
+                }
+
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HealthOfficerForm()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var model = new HealthOfficerFormVM
+            {
+                SubmittedByUserId = user.Id,
+                SubmittedByUser = user
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> HealthOfficerForm(HealthOfficerFormVM model, string? returnUrl = null)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (ModelState.IsValid)
+            {
+                HealthOfficerForm formData = new()
+                {
+                    DateSubmitted = model.DateSubmitted,
+                    SubmittedByUser = user,
+                    FacilityType = model.FacilityType,
+                    InspectionResults = model.InspectionResults,
+                    SanitationStatus = model.SanitationStatus,
+                    PublicHealthRisk = model.PublicHealthRisk,
+                    DiseaseVectorPresent = string.Join(",", model.DiseaseVectorPresent),
+                    WaterQualityAssessment = model.WaterQualityAssessment,
+                    WasteDisposalEvaluation = model.WasteDisposalEvaluation,
+                    ComplianceStatus = model.ComplianceStatus,
+                    EnforcementMeasures = model.EnforcementMeasures,
+                    PublicHealthGuidance = model.PublicHealthGuidance
+                };
+
+                _context.HealthOfficerForms.Add(formData);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Health Officer Form submitted successfully!";
 
                 return RedirectToAction("Index");
             }

@@ -1,0 +1,132 @@
+﻿@using rgproj.ViewModels
+@model HealthOfficerFormVM
+
+<div class="card">
+    <div class="card-header">
+        <h4>Submit Health Officer Form</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="HealthOfficerForm" method="post">
+
+            <div class="mb-3">
+                <label asp-for="DateSubmitted" class="form-label">Date</label>
+                <input type="text" class="form-control" value="@Model.DateSubmitted.ToString("yyyy-MM-dd HH:mm:ss")" readonly />
+                <span asp-validation-for="DateSubmitted" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SubmittedByUser" class="form-label">Submitted By</label>
+                <input asp-for="SubmittedByUser" class="form-control" readonly />
+                <span asp-validation-for="SubmittedByUser" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="FacilityType" class="form-label">Facility Type</label>
+                <select asp-for="FacilityType" class="form-select">
+                    <option value="" disabled selected>Select Facility Type</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="FoodService">Food Service</option>
+                    <option value="Residential">Residential</option>
+                    <option value="Industrial">Industrial</option>
+                </select>
+                <span asp-validation-for="FacilityType" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="InspectionResults" class="form-label">Inspection Findings</label>
+                <input asp-for="InspectionResults" class="form-control" />
+                <span asp-validation-for="InspectionResults" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SanitationStatus" class="form-label">Sanitation Status</label>
+                <select asp-for="SanitationStatus" class="form-select">
+                    <option value="" disabled selected>Select Sanitation Status</option>
+                    <option value="Critical">Critical</option>
+                    <option value="NeedsImprovement">Needs Improvement</option>
+                    <option value="Satisfactory">Satisfactory</option>
+                    <option value="Excellent">Excellent</option>
+                </select>
+                <span asp-validation-for="SanitationStatus" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PublicHealthRisk" class="form-label">Public Health Risk</label>
+                <select asp-for="PublicHealthRisk" class="form-select">
+                    <option value="" disabled selected>Select Public Health Risk</option>
+                    <option value="Low">Low</option>
+                    <option value="Moderate">Moderate</option>
+                    <option value="High">High</option>
+                    <option value="Immediate">Immediate</option>
+                </select>
+                <span asp-validation-for="PublicHealthRisk" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Vector Presence</label><br />
+                @foreach (var option in Model.VectorPresenceOptions)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="IsDiseaseVectorPresent"
+                               value="@option.Value"
+                               id="@option.Value"
+                        @(Model.DiseaseVectorPresent != null && Model.DiseaseVectorPresent.Contains(option.Value) ? "checked" : "") />
+                        <label class="form-check-label" for="@option.Value">
+                            @option.Text
+                        </label>
+                    </div>
+                }
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="WaterQualityAssessment" class="form-label">Water Quality</label>
+                <input asp-for="WaterQualityAssessment" class="form-control" />
+                <span asp-validation-for="WaterQualityAssessment" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="WasteDisposalEvaluation" class="form-label">Waste Management</label>
+                <input asp-for="WasteDisposalEvaluation" class="form-control" />
+                <span asp-validation-for="WasteDisposalEvaluation" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ComplianceStatus" class="form-label">Compliance Status</label>
+                <select asp-for="ComplianceStatus" class="form-select">
+                    <option value="" disabled selected>Select Compliance Status</option>
+                    <option value="FullCompliance">Full Compliance</option>
+                    <option value="MinorViolations">Minor Violations</option>
+                    <option value="MajorViolations">Major Violations</option>
+                    <option value="ShutdownOrdered">Shutdown Ordered</option>
+                </select>
+                <span asp-validation-for="ComplianceStatus" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="EnforcementMeasures" class="form-label">Enforcement Actions</label>
+                <textarea asp-for="EnforcementMeasures" class="form-control"></textarea>
+                <span asp-validation-for="EnforcementMeasures" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PublicHealthGuidance" class="form-label">Community Education</label>
+                <textarea asp-for="PublicHealthGuidance" class="form-control"></textarea>
+                <span asp-validation-for="PublicHealthGuidance" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Submit Form</button>
+            </div>
+        </form>
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using rgproj.Models;
+using rgproj.ViewModels;
 
 namespace rgproj.Data
 {
@@ -11,5 +12,6 @@ namespace rgproj.Data
         public DbSet<EnvironmentalistForm> EnvironmentalistForms { get; set; }
         public DbSet<VeterinaryForm> VeterinaryForms { get; set; }
         public DbSet<SpecialistForm> SpecialistForms { get; set; }
+        public DbSet<HealthOfficerForm> HealthOfficerForms { get; set; }
     }
 }

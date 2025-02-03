@@ -13,7 +13,7 @@ namespace rgproj.Data.Seeders
 
         public async Task SeedRolesAsync()
         {
-            var roles = new[] { "Admin", "Environmentalist", "Specialist", "Veterinary Doctor", "Health Worker" };
+            var roles = new[] { "Admin", "Environmentalist", "Specialist", "Veterinary Doctor", "Health Officer" };
 
             foreach (var role in roles)
             {

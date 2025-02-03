@@ -1,0 +1,78 @@
+﻿@model List<dynamic>
+@if (!Model.Any())
+{
+    <p class="text-muted">You haven't submitted any @ViewBag.FormType.Replace("Form", "") forms yet.</p>
+}
+else
+{
+    <div class="container mt-4">
+        <h2>Your Submitted @ViewBag.FormType.Replace("Form", "") Forms</h2>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date Submitted</th>
+                    @if (ViewBag.FormType == "EnvironmentalistForm")
+                    {
+                        <th>Location</th>
+                        <th>Category</th>
+                    }
+                    @if (ViewBag.FormType == "VeterinaryForm")
+                    {
+                        <th>Animal Species</th>
+                        <th>Health Status</th>
+                    }
+                    @if (ViewBag.FormType == "SpecialistForm")
+                    {
+                        <th>Case Type</th>
+                        <th>Severity</th>
+                    }
+                    @if (ViewBag.FormType == "HealthOfficerForm")
+                    {
+                        <th>Facility Type</th>
+                        <th>Risk Level</th>
+                    }
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var form in Model)
+                {
+                    <tr>
+                        <td>@form.DateSubmitted.ToString("d")</td>
+
+                        @if (ViewBag.FormType == "EnvironmentalistForm")
+                        {
+                            <td>@form.Location</td>
+                            <td>@form.Category</td>
+                        }
+
+                        @if (ViewBag.FormType == "VeterinaryForm")
+                        {
+                            <td>@form.AnimalSpecies</td>
+                            <td>@form.HealthStatus</td>
+                        }
+
+                        @if (ViewBag.FormType == "SpecialistForm")
+                        {
+                            <td>@form.CaseType</td>
+                            <td>@form.SeverityLevel</td>
+                        }
+
+                        @if (ViewBag.FormType == "HealthOfficerForm")
+                        {
+                            <td>@form.FacilityType</td>
+                            <td>@form.PublicHealthRisk</td>
+                        }
+
+                        <td>
+                            <a asp-action="EditForm"
+                               asp-route-id="@form.Id"
+                               class="btn btn-primary">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

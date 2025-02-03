@@ -2,7 +2,7 @@
 
 namespace rgproj.Models
 {
-    public class VeterinaryForm
+    public class VeterinaryDoctorForm
     {
         public int Id { get; set; }
         public DateTime DateSubmitted { get; set; }

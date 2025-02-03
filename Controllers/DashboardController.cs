@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.SqlServer.Server;
 using rgproj.Data;
 using rgproj.Models;
@@ -39,11 +40,9 @@ namespace rgproj.Controllers
                     .Take(3)
                     .ToList();
             }
-            //else if (roles.Contains
-        
             return View();
         }
-    
+                   
         public async Task<IActionResult> SubmitForm()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -53,18 +52,65 @@ namespace rgproj.Controllers
 
                 if (roles.Contains("Environmentalist"))
                     return RedirectToAction("EnvironmentalistForm");
-                if (roles.Contains("Health Worker"))
-                    return RedirectToAction("HealthWorkerForm");
                 if (roles.Contains("Veterinary Doctor"))
                     return RedirectToAction("VeterinaryForm");
                 if (roles.Contains("Specialist"))
                     return RedirectToAction("SpecialistForm");
-                if (roles.Contains("HealthOfficerForm"))
+                if (roles.Contains("Health Officer"))
                     return RedirectToAction("HealthOfficerForm");
             }
 
             return RedirectToAction("Login", "Account");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> SubmittedForms()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("Login", "Account");
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var userRole = roles.FirstOrDefault();
+
+            List<object> forms = userRole switch
+            {
+                "Environmentalist" => (await _context.EnvironmentalistForms
+                    .Where(f => f.SubmittedByUserId == user.Id)
+                    .OrderByDescending(f => f.DateSubmitted)
+                    .ToListAsync())
+                    .Cast<object>()
+                    .ToList(),
+
+                "Veterinary Doctor" => (await _context.VeterinaryForms
+                    .Where(f => f.SubmittedByUserId == user.Id)
+                    .OrderByDescending(f => f.DateSubmitted)
+                    .ToListAsync())
+                    .Cast<object>()
+                    .ToList(),
+
+                "Specialist" => (await _context.SpecialistForms
+                    .Where(f => f.SubmittedByUserId == user.Id)
+                    .OrderByDescending(f => f.DateSubmitted)
+                    .ToListAsync())
+                    .Cast<object>()
+                    .ToList(),
+
+                "Health Officer" => (await _context.HealthOfficerForms
+                    .Where(f => f.SubmittedByUserId == user.Id)
+                    .OrderByDescending(f => f.DateSubmitted)
+                    .ToListAsync())
+                    .Cast<object>()
+                    .ToList(),
+
+                _ => new List<object>()
+            };
+
+            ViewBag.FormType = userRole?.Replace(" ", "") + "Form";
+
+            return View("SubmittedForms", forms);
+        }
+
+
 
         [HttpGet]
         public async Task<IActionResult> EnvironmentalistForm()
@@ -136,7 +182,7 @@ namespace rgproj.Controllers
 
             if (ModelState.IsValid)
             {
-                VeterinaryForm formData = new()
+                VeterinaryDoctorForm formData = new()
                 {
                     DateSubmitted = model.DateSubmitted,
                     SubmittedByUser = user,

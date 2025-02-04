@@ -17,7 +17,7 @@ else
                         <th>Location</th>
                         <th>Category</th>
                     }
-                    @if (ViewBag.FormType == "VeterinaryForm")
+                    @if (ViewBag.FormType == "VeterinaryDoctorForm")
                     {
                         <th>Animal Species</th>
                         <th>Health Status</th>
@@ -52,7 +52,7 @@ else
                             </td>
                         }
 
-                        @if (ViewBag.FormType == "VeterinaryForm")
+                        @if (ViewBag.FormType == "VeterinaryDoctorForm")
                         {
                             <td>@form.AnimalSpecies</td>
                             <td>@form.HealthStatus</td>

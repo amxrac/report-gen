@@ -110,18 +110,138 @@ namespace rgproj.Controllers
             return View("SubmittedForms", forms);
         }
 
+        //[HttpGet]
+        //public async Task<IActionResult> EditForm(int id)
+        //{
+        //    // 1. Get current user
+        //    var user = await _userManager.GetUserAsync(User);
+        //    if (user == null) return RedirectToAction("Login", "Account");
+
+        //    // 2. Get user's role
+        //    var roles = await _userManager.GetRolesAsync(user);
+        //    var userRole = roles.FirstOrDefault();
+
+        //    // 3. Find form only if user owns it
+        //    dynamic form = userRole switch
+        //    {
+        //        "Environmentalist" => await _context.EnvironmentalistForms
+        //            .FirstOrDefaultAsync(f => f.Id == id && f.SubmittedByUserId == user.Id),
+        //        "Veterinary Doctor" => await _context.VeterinaryForms
+        //            .FirstOrDefaultAsync(f => f.Id == id && f.SubmittedByUserId == user.Id),
+        //        "Specialist" => await _context.SpecialistForms
+        //            .FirstOrDefaultAsync(f => f.Id == id && f.SubmittedByUserId == user.Id),
+        //        "Health Officer" => await _context.HealthOfficerForms
+        //            .FirstOrDefaultAsync(f => f.Id == id && f.SubmittedByUserId == user.Id),
+        //        _ => null
+        //    };
+
+        //    if (form == null) return NotFound();
+
+        //    // 4. Map to ViewModel based on role
+        //    dynamic vm = userRole switch
+        //    {
+        //        "Environmentalist" => new EnvironmentalistFormVM
+        //        {
+        //            Id = form.Id,
+        //            DateSubmitted = form.DateSubmitted,
+        //            SubmittedByUser = user,
+        //            Location = form.Location,
+        //            Description = form.Description,
+        //            WitnessDetails = form.WitnessDetails,
+        //            Category = form.Category,
+        //            ActionsTaken = form.ActionsTaken,
+        //            IsReported = form.IsReported,
+        //            ReportedDetails = form.ReportedDetails,
+        //            FollowUpAction = form.FollowUpAction
+        //        },
+        //        "Veterinary Doctor" => new VeterinaryFormVM
+        //        {
+        //            Id = form.Id,
+        //            DateSubmitted = form.DateSubmitted,
+        //            SubmittedByUser = user,
+        //            AnimalSpecies = form.AnimalSpecies,
+        //            HealthStatus = form.HealthStatus,
+        //            VaccinationDetails = form.VaccinationDetails,
+        //            ClinicalSymptoms = form.ClinicalSymptoms,
+        //            PreliminaryDiagnosis = form.PreliminaryDiagnosis,
+        //            PotentialZoonoticRisk = form.PotentialZoonoticRisk,
+        //            SuspectedDisease = form.SuspectedDisease,
+        //            QuarantineRecommended = form.QuarantineRecommended,
+        //            FollowUpProtocol = form.FollowUpProtocol
+        //        },
+        //        "Specialist" => new SpecialistFormVM()
+        //        {
+        //            Id = form.Id,
+        //            DateSubmitted = form.DateSubmitted,
+        //            SubmittedByUser = user,
+        //            CaseType = form.CaseType,
+        //            SeverityLevel = form.SeverityLevel,
+        //            AffectedDemographic = string.Join(",", form.AffectedDemographic),
+        //            TransmissionPattern = form.TransmissionPattern,
+        //            ExposureHistory = form.ExposureHistory,
+        //            LaboratoryFindings = form.LaboratoryFindings,
+        //            AntibioticResistanceObserved = form.AntibioticResistanceObserved,
+        //            RequiresNCDCNotification = form.RequiresNCDCNotification,
+        //            ContainmentMeasures = form.ContainmentMeasures,
+        //            SpecialistComments = form.SpecialistComments
+        //        },
+        //        "Health Officer" => new HealthOfficerFormVM()
+        //        {
+        //            Id = form.Id,
+        //            DateSubmitted = form.DateSubmitted,
+        //            SubmittedByUser = user,
+        //            FacilityType = form.FacilityType,
+        //            InspectionResults = form.InspectionResults,
+        //            SanitationStatus = form.SanitationStatus,
+        //            PublicHealthRisk = form.PublicHealthRisk,
+        //            DiseaseVectorPresent = string.Join(",", form.DiseaseVectorPresent),
+        //            WaterQualityAssessment = form.WaterQualityAssessment,
+        //            WasteDisposalEvaluation = form.WasteDisposalEvaluation,
+        //            ComplianceStatus = form.ComplianceStatus,
+        //            EnforcementMeasures = form.EnforcementMeasures,
+        //            PublicHealthGuidance = form.PublicHealthGuidance
+        //        },
+
+        //        _ => null
+        //    };
+
+        //    return View(vm);
+        //}
+
 
 
         [HttpGet]
-        public async Task<IActionResult> EnvironmentalistForm()
+        public async Task<IActionResult> EnvironmentalistForm(int? id)
         {
             var user = await _userManager.GetUserAsync(User);
-            var model = new EnvironmentalistFormVM
+            if (id.HasValue)
+            {
+                var existingForm = await _context.EnvironmentalistForms
+                    .FirstOrDefaultAsync(f => f.Id == id && f.SubmittedByUserId == user.Id);
+
+                if (existingForm == null) return NotFound();
+                var model = new EnvironmentalistFormVM
+                {
+                    Id = existingForm.Id,
+                    DateSubmitted = existingForm.DateSubmitted,
+                    Location = existingForm.Location,
+                    Description = existingForm.Description,
+                    WitnessDetails = existingForm.WitnessDetails,
+                    Category = existingForm.Category,
+                    ActionsTaken = existingForm.ActionsTaken,
+                    IsReported = existingForm.IsReported,
+                    ReportedDetails = existingForm.ReportedDetails,
+                    FollowUpAction = existingForm.FollowUpAction,
+                };
+                return View(model);
+
+            }
+
+            return View(new EnvironmentalistFormVM
             {
                 SubmittedByUserId = user.Id,
                 SubmittedByUser = user
-            };
-            return View(model);
+            });
         }
 
         [HttpPost]
@@ -131,23 +251,38 @@ namespace rgproj.Controllers
 
             if (ModelState.IsValid)
             {
-                EnvironmentalistForm formData = new()
-                {
-                    DateSubmitted = model.DateSubmitted,
-                    SubmittedByUser = user,
-                    Location = model.Location,
-                    Description = model.Description,
-                    WitnessDetails = model.WitnessDetails,
-                    Category = model.Category,
-                    ActionsTaken = model.ActionsTaken,
-                    IsReported = model.IsReported,
-                    ReportedDetails = model.ReportedDetails,
-                    FollowUpAction = model.FollowUpAction
-                };
+                var isNewForm = model.Id == 0;
+                EnvironmentalistForm formData = isNewForm
+            ? new EnvironmentalistForm()
+            : await _context.EnvironmentalistForms
+                .FirstOrDefaultAsync(f => f.Id == model.Id && f.SubmittedByUserId == user.Id);
 
-                _context.EnvironmentalistForms.Add(formData);
+                if (formData == null) return NotFound();
+
+                formData.Id = model.Id;
+                formData.DateSubmitted = model.DateSubmitted;
+                formData.SubmittedByUser = user;
+                formData.Location = model.Location;
+                formData.Description = model.Description;
+                formData.WitnessDetails = model.WitnessDetails;
+                formData.Category = model.Category;
+                formData.ActionsTaken = model.ActionsTaken;
+                formData.IsReported = model.IsReported;
+                formData.ReportedDetails = model.ReportedDetails;
+                formData.FollowUpAction = model.FollowUpAction;
+
+                if (isNewForm)
+                {
+                    _context.EnvironmentalistForms.Add(formData);
+                }
+                else
+                {
+                    _context.EnvironmentalistForms.Update(formData);
+                }
                 await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Environmentalist Form submitted successfully!";
+                TempData["SuccessMessage"] = isNewForm
+            ? "Environmentalist Form submitted successfully!"
+            : "Environmentalist Form updated successfully!";
 
                 return RedirectToAction("Index");
             }
@@ -184,6 +319,7 @@ namespace rgproj.Controllers
             {
                 VeterinaryDoctorForm formData = new()
                 {
+                    Id = model.Id,
                     DateSubmitted = model.DateSubmitted,
                     SubmittedByUser = user,
                     AnimalSpecies = model.AnimalSpecies,
@@ -236,6 +372,7 @@ namespace rgproj.Controllers
             {
                 SpecialistForm formData = new()
                 {
+                    Id = model.Id,
                     DateSubmitted = model.DateSubmitted,
                     SubmittedByUser = user,
                     CaseType = model.CaseType,
@@ -289,6 +426,7 @@ namespace rgproj.Controllers
             {
                 HealthOfficerForm formData = new()
                 {
+                    Id = model.Id,
                     DateSubmitted = model.DateSubmitted,
                     SubmittedByUser = user,
                     FacilityType = model.FacilityType,

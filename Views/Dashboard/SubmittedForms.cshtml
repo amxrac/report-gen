@@ -45,31 +45,47 @@ else
                         {
                             <td>@form.Location</td>
                             <td>@form.Category</td>
+                            <td>
+                                <a asp-action="EnvironmentalistForm"
+                                   asp-route-id="@form.Id"
+                                   class="btn btn-primary">Edit</a>
+                            </td>
                         }
 
                         @if (ViewBag.FormType == "VeterinaryForm")
                         {
                             <td>@form.AnimalSpecies</td>
                             <td>@form.HealthStatus</td>
+                            <td>
+                                <a asp-action="VeterinaryForm"
+                                   asp-route-id="@form.Id"
+                                   class="btn btn-primary">Edit</a>
+                            </td>
                         }
 
                         @if (ViewBag.FormType == "SpecialistForm")
                         {
                             <td>@form.CaseType</td>
                             <td>@form.SeverityLevel</td>
+                            <td>
+                                <a asp-action="SpecialistForm"
+                                   asp-route-id="@form.Id"
+                                   class="btn btn-primary">Edit</a>
+                            </td>
                         }
 
                         @if (ViewBag.FormType == "HealthOfficerForm")
                         {
                             <td>@form.FacilityType</td>
                             <td>@form.PublicHealthRisk</td>
+                            <td>
+                                <a asp-action="HealthOfficerForm"
+                                   asp-route-id="@form.Id"
+                                   class="btn btn-primary">Edit</a>
+                            </td>
                         }
 
-                        <td>
-                            <a asp-action="EditForm"
-                               asp-route-id="@form.Id"
-                               class="btn btn-primary">Edit</a>
-                        </td>
+                        
                     </tr>
                 }
             </tbody>

@@ -7,7 +7,7 @@
     </div>
     <div class="card-body">
         <form asp-action="SpecialistForm" method="post">
-
+            <input type="hidden" asp-for="Id" />
             <div class="mb-3">
                 <label asp-for="DateSubmitted" class="form-label">Date</label>
                 <input type="text" class="form-control" id="DateSubmitted" value="@Model.DateSubmitted.ToString("yyyy-MM-dd HH:mm:ss")" readonly />

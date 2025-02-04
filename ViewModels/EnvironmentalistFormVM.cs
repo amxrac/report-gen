@@ -5,6 +5,7 @@ namespace rgproj.ViewModels
 {
     public class EnvironmentalistFormVM
     {
+        public int Id { get; set; }
         public DateTime DateSubmitted { get; set; } = DateTime.Now;
         public string? SubmittedByUserId { get; set; }
 

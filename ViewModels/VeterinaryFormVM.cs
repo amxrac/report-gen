@@ -5,6 +5,7 @@ namespace rgproj.ViewModels
 {
     public class VeterinaryFormVM
     {
+        public int Id { get; set; }
         public DateTime DateSubmitted { get; set; } = DateTime.Now;
         public string? SubmittedByUserId { get; set; }
         public AppUser? SubmittedByUser { get; set; }

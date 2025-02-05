@@ -1,0 +1,31 @@
+﻿@model dynamic
+@{
+    var formType = ViewBag.FormType as string;
+    ViewData["Title"] = $"{formType} Form Details";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h4>@formType Form Details</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Submitted By</dt>
+                <dd class="col-sm-9">@Model.SubmittedByUser.Name</dd>
+
+                <dt class="col-sm-3">Date Submitted</dt>
+                <dd class="col-sm-9">@Model.DateSubmitted.ToString("f")</dd>
+
+                @foreach (var prop in ((IEnumerable<System.Reflection.PropertyInfo>)Model.GetType().GetProperties())
+                .Where(p => p.Name != "Id" && p.Name != "SubmittedByUserId" && p.Name != "SubmittedByUser"))
+                {
+                    <dt class="col-sm-3">@prop.Name</dt>
+                    <dd class="col-sm-9">@prop.GetValue(Model)</dd>
+                }
+            </dl>
+
+            <a asp-action="Dashboard" class="btn btn-primary">Back to List</a>
+        </div>
+    </div>
+</div>

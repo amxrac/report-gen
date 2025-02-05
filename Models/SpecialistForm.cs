@@ -13,6 +13,7 @@ namespace rgproj.Models
 
         
         public string? SeverityLevel { get; set; } 
+
         public string? AffectedDemographic { get; set; }
 
         public string? TransmissionPattern { get; set; }

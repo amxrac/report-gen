@@ -14,4 +14,3 @@ appsettings.Local.json
 packages/
 .env	
 /appsettings.json
-/Controllers/AdminController.cs

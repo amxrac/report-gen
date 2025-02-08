@@ -1,0 +1,39 @@
+﻿@model rgproj.ViewModels.ReportGenerationVM
+
+@{
+    ViewData["Title"] = "Generate Report";
+}
+
+@if (Model.SelectedFormIds.Count == 0)
+{
+    <div class="alert alert-danger">
+        No forms selected. Please go back and select forms.
+    </div>
+}
+else
+{
+    <form asp-action="GenerateReport" method="post">
+        @Html.AntiForgeryToken()
+
+        @foreach (var id in Model.SelectedFormIds)
+        {
+            <input type="hidden" name="SelectedFormIds" value="@id" />
+        }
+
+        <div class="form-group">
+            <label>Select AI Model:</label>
+            <select asp-for="SelectedModel" class="form-control">
+                <option value="Gemini">Gemini (Remote)</option>
+                <option value="Ollama">Ollama (Local)</option>
+            </select>
+        </div>
+
+        <div class="form-check mb-3">
+            <input asp-for="IsPublic" class="form-check-input" />
+            <label class="form-check-label">Make report publicly visible</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Generate Report</button>
+        <a asp-action="Dashboard" class="btn btn-secondary">Cancel</a>
+    </form>
+}

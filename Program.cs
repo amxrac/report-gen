@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using rgproj.Data;
 using rgproj.Data.Seeders;
 using rgproj.Models;
+using rgproj.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,21 @@ builder.Services.AddSession(options => {
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
+//builder.Services.AddScoped<IAiReportService, ReportService>();
+builder.Services.AddHttpClient<IAiReportService, ReportService>()
+    .ConfigureHttpClient(client =>
+    {
+        client.Timeout = TimeSpan.FromMinutes(5);
+    })
+    .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+    {
+        PooledConnectionLifetime = TimeSpan.FromMinutes(30),
+        KeepAlivePingPolicy = HttpKeepAlivePingPolicy.WithActiveRequests,
+        EnableMultipleHttp2Connections = true,
+        ConnectTimeout = TimeSpan.FromMinutes(30),
+        PooledConnectionIdleTimeout = TimeSpan.FromMinutes(30),
+        MaxConnectionsPerServer = 10
+    });
 
 var app = builder.Build();
 

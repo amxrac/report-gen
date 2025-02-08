@@ -4,10 +4,24 @@
 @{
     ViewData["Title"] = "Admin Dashboard";
 }
+<div class="navbar-nav ms-auto align-items-center">
+    <span class="navbar-text me-3">Welcome, @ViewBag.UserName</span>
+    <span class="navbar-text me-3">Role: @ViewBag.UserRole</span>
+    <form asp-controller="Account" asp-action="Logout" method="post" class="d-flex align-items-center">
+        <button type="submit" class="btn btn-link p-0 m-0 border-0 text-decoration-none text-secondary">Logout</button>
+    </form>
+</div>
 
 <h2>Admin Dashboard</h2>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
 <form method="post" asp-action="ProcessSelectedForms">
+    @Html.AntiForgeryToken()
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -50,10 +64,8 @@
                                             {
                                                 <tr>
                                                     <td>
-                                                        <input type="checkbox"
-                                                               name="selectedForms"
-                                                               value="@form.Id"
-                                                        @(Model.SelectedFormIds.Contains(form.Id) ? "checked" :                                 "") />
+                                                        <input type="checkbox" name="SelectedFormIds" value="@form.Id"
+                                                        @(Model.SelectedFormIds.Contains(form.Id) ? "checked" : "") />
                                                     </td>
                                                     <td>@form.DateSubmitted.ToString("d")</td>
                                                     <td>Environmental Report</td>
@@ -94,7 +106,7 @@
                                                 <tr>
                                                     <td>
                                                         <input type="checkbox"
-                                                               name="selectedForms"
+                                                               name="SelectedFormIds"
                                                                value="@form.Id"
                                                         @(Model.SelectedFormIds.Contains(form.Id) ? "checked" : "") />
                                                     </td>
@@ -137,7 +149,7 @@
                                                 <tr>
                                                     <td>
                                                         <input type="checkbox"
-                                                               name="selectedForms"
+                                                               name="SelectedFormIds"
                                                                value="@form.Id"
                                                         @(Model.SelectedFormIds.Contains(form.Id) ? "checked" : "") />
                                                     </td>
@@ -180,7 +192,7 @@
                                                 <tr>
                                                     <td>
                                                         <input type="checkbox"
-                                                               name="selectedForms"
+                                                               name="SelectedFormIds"
                                                                value="@form.Id"
                                                         @(Model.SelectedFormIds.Contains(form.Id) ? "checked" : "") />
                                                     </td>
@@ -222,72 +234,36 @@
 
 @section Scripts {
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var firstTab = new bootstrap.Tab(document.querySelector("#formTabs .nav-link.active"));
-            firstTab.show();
-        });
         document.addEventListener('DOMContentLoaded', function() {
-            const checkboxes = document.querySelectorAll('input[type="checkbox"][name="selectedForms"]');
+            const checkboxes = document.querySelectorAll('input[name="SelectedFormIds"]');
             const counter = document.getElementById('selectedCount');
+
+            // Initialize count
+            counter.textContent = document.querySelectorAll('input[name="SelectedFormIds"]:checked').length;
 
             checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', function() {
-                    const selected = document.querySelectorAll('input[type="checkbox"][name="selectedForms"]:checked').length;
+                    const selected = document.querySelectorAll('input[name="SelectedFormIds"]:checked').length;
                     counter.textContent = selected;
 
-                    if (selected >= 10) {
-                        checkboxes.forEach(cb => {
-                            if (!cb.checked) cb.disabled = true;
-                        });
-                    } else {
-                        checkboxes.forEach(cb => cb.disabled = false);
+                    // Enforce max selection
+                    if (selected > 10) {
+                        this.checked = false;
+                        counter.textContent = 10;
+                        alert('Maximum of 10 forms allowed');
                     }
                 });
             });
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            const checkboxes = document.querySelectorAll("input[name='selectedForms']");
-            const selectedCount = document.getElementById("selectedCount");
 
-            // Load selected form IDs from local storage
-            let selectedForms = JSON.parse(localStorage.getItem("selectedForms")) || [];
+            // Form submission handler
+            document.querySelector('form').addEventListener('submit', function(e) {
+                const selected = document.querySelectorAll('input[name="SelectedFormIds"]:checked').length;
 
-            // Restore selections
-            checkboxes.forEach(checkbox => {
-                if (selectedForms.includes(parseInt(checkbox.value))) {
-                    checkbox.checked = true;
+                if (selected === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one form');
                 }
             });
-
-            function updateSelection() {
-                // Get all checked checkboxes
-                selectedForms = Array.from(document.querySelectorAll("input[name='selectedForms']:checked"))
-                    .map(cb => parseInt(cb.value));
-
-                // Save updated selection to local storage
-                localStorage.setItem("selectedForms", JSON.stringify(selectedForms));
-
-                // Update the count UI
-                selectedCount.textContent = selectedForms.length;
-            }
-
-            // Attach event listener to checkboxes
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener("change", updateSelection);
-            });
-
-            // Initial update
-            updateSelection();
-
-            // Ensure correct selections when navigating back
-            window.addEventListener("pageshow", function () {
-                let storedForms = JSON.parse(localStorage.getItem("selectedForms")) || [];
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = storedForms.includes(parseInt(checkbox.value));
-                });
-                selectedCount.textContent = storedForms.length;
-            });
-
         });
     </script>
 }

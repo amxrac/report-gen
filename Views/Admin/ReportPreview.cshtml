@@ -1,0 +1,33 @@
+﻿@using rgproj.Models;
+@model GeneratedReport;
+
+@{
+    ViewData["Title"] = "Report Preview";
+}
+
+<h2>Report Preview</h2>
+
+<div>
+    <h4>Generated Report</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Date Generated:</dt>
+        <dd class="col-sm-9">@Model.GeneratedDate.ToString("f")</dd>
+
+        <dt class="col-sm-3">Model Used:</dt>
+        <dd class="col-sm-9">@Model.ModelUsed</dd>
+
+        <dt class="col-sm-3">Public Visibility:</dt>
+        <dd class="col-sm-9">@(Model.IsPublic ? "Yes" : "No")</dd>
+    </dl>
+
+    <h5>Report Content:</h5>
+    <div class="border p-3">
+        @Html.Raw(Model.Content.Replace("*", "").Replace("\n", "<br>"))
+    </div>
+
+    <div class="mt-3">
+        <a asp-action="Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+        <a asp-action="DownloadReport" asp-route-id="@Model.Id" class="btn btn-primary">Download Report</a>
+    </div>
+</div>

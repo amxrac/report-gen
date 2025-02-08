@@ -8,13 +8,9 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\AccountController\**" />
-    <Compile Remove="Services\Interfaces\**" />
     <Content Remove="Controllers\AccountController\**" />
-    <Content Remove="Services\Interfaces\**" />
     <EmbeddedResource Remove="Controllers\AccountController\**" />
-    <EmbeddedResource Remove="Services\Interfaces\**" />
     <None Remove="Controllers\AccountController\**" />
-    <None Remove="Services\Interfaces\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +26,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

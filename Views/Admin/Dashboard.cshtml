@@ -10,6 +10,7 @@
     <form asp-controller="Account" asp-action="Logout" method="post" class="d-flex align-items-center">
         <button type="submit" class="btn btn-link p-0 m-0 border-0 text-decoration-none text-secondary">Logout</button>
     </form>
+
 </div>
 
 <h2>Admin Dashboard</h2>
@@ -238,7 +239,6 @@
             const checkboxes = document.querySelectorAll('input[name="SelectedFormIds"]');
             const counter = document.getElementById('selectedCount');
 
-            // Initialize count
             counter.textContent = document.querySelectorAll('input[name="SelectedFormIds"]:checked').length;
 
             checkboxes.forEach(checkbox => {
@@ -246,7 +246,6 @@
                     const selected = document.querySelectorAll('input[name="SelectedFormIds"]:checked').length;
                     counter.textContent = selected;
 
-                    // Enforce max selection
                     if (selected > 10) {
                         this.checked = false;
                         counter.textContent = 10;
@@ -255,8 +254,7 @@
                 });
             });
 
-            // Form submission handler
-            document.querySelector('form').addEventListener('submit', function(e) {
+            document.querySelector('form[asp-action="ProcessSelectedForms"]').addEventListener('submit', function(e) {
                 const selected = document.querySelectorAll('input[name="SelectedFormIds"]:checked').length;
 
                 if (selected === 0) {

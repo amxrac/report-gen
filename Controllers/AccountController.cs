@@ -78,6 +78,12 @@ namespace rgproj.Controllers
                 {
                     user.LastLogin = DateTime.UtcNow;
                     await _userManager.UpdateAsync(user);
+
+                    if (await _userManager.IsInRoleAsync(user, "Admin"))
+                    {
+                        return RedirectToAction("Dashboard", "Admin");
+                    }
+
                     return Redirect(returnUrl ?? Url.Action("Index", "Dashboard"));
                 }
                 ModelState.AddModelError("", "Invalid login attempt.");
@@ -91,7 +97,7 @@ namespace rgproj.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult ForgotPassword()

@@ -41,7 +41,6 @@ namespace rgproj.Documents
                     .PaddingVertical(1, Unit.Centimetre)
                     .Column(column =>
                     {
-                        // Add classification banner if not public
                         if (!_report.IsPublic)
                         {
                             column.Item().Background(Colors.Grey.Lighten3)
@@ -51,11 +50,10 @@ namespace rgproj.Documents
                                 .AlignCenter();
                         }
 
-                        // Main report content
                         column.Item().Text(_report.Content
-                            .Replace("**", "") // Remove markdown bold
-                            .Replace("*", "") // Remove markdown italic
-                            .Replace("#", "") // Remove markdown headers
+                            .Replace("**", "")
+                            .Replace("*", "")
+                            .Replace("#", "")
                         );
                     });
 

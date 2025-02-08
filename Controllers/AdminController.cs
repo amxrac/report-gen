@@ -210,7 +210,6 @@ namespace rgproj.Controllers
                 return NotFound("Report not found");
             }
 
-            // Create PDF document
             var document = new ReportDocument(report);
             var pdfBytes = document.GeneratePdf();
 

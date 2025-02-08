@@ -1,0 +1,16 @@
+﻿@model rgproj.Models.GeneratedReport
+@{
+    ViewData["Title"] = "Report Details";
+}
+
+<div class="container mt-4">
+    <h2>One Health Report #@Model.Id</h2>
+    <p class="text-muted">Generated on @Model.GeneratedDate.ToString("MMMM dd, yyyy") using @Model.ModelUsed</p>
+    <hr>
+    <p>@Html.Raw(Model.Content.Replace("*", "").Replace("\n", "<br>"))</p>
+    <div class="mt-4">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary me-2">Back to Reports</a>
+        <a asp-controller="Admin" asp-action="DownloadReport" asp-route-id="@Model.Id" class="btn btn-primary">Download Report</a>
+    </div>
+
+</div>

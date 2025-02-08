@@ -6,8 +6,13 @@ using rgproj.Data;
 using rgproj.Models;
 using rgproj.Services;
 using rgproj.ViewModels;
+using rgproj.Documents;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+
 
 namespace rgproj.Controllers
 {
@@ -104,10 +109,6 @@ namespace rgproj.Controllers
                 TempData["ErrorMessage"] = "Maximum of 10 forms can be selected";
                 return RedirectToAction("Dashboard");
             }
-
-            //HttpContext.Session.SetString("SelectedForms", JsonSerializer.Serialize(SelectedFormIds));
-            //TempData["SelectedForms"] = SelectedFormIds;
-            //TempData.Keep("SelectedForms");
             var serializedForms = JsonSerializer.Serialize(SelectedFormIds);
             HttpContext.Session.SetString("SelectedFormIds", serializedForms);
 
@@ -197,6 +198,27 @@ namespace rgproj.Controllers
             if (report == null) return NotFound();
 
             return View(report);
+        }
+
+        public async Task<IActionResult> DownloadReport(int id)
+        {
+            var report = await _context.GeneratedReports
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (report == null)
+            {
+                return NotFound("Report not found");
+            }
+
+            // Create PDF document
+            var document = new ReportDocument(report);
+            var pdfBytes = document.GeneratePdf();
+
+            // Generate filename
+            var filename = $"OneHealth_Report_{id}_{report.GeneratedDate:yyyyMMdd}.pdf";
+
+            // Return PDF file
+            return File(pdfBytes, "application/pdf", filename);
         }
 
 

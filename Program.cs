@@ -4,8 +4,19 @@ using rgproj.Data;
 using rgproj.Data.Seeders;
 using rgproj.Models;
 using rgproj.Services;
+using QuestPDF;
+using QuestPDF.Infrastructure;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+
+
+
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 var connectionString = builder.Configuration.GetConnectionString("RgprojConnectionString");
 

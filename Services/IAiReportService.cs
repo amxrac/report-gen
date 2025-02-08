@@ -207,9 +207,8 @@ namespace rgproj.Services
                 Console.WriteLine("Sending request to Flask service...");
                 using var response = await _httpClient.PostAsync(flaskUrl, content);
                 var responseContent = await response.Content.ReadAsStringAsync();
-                var cleanResponse = responseContent.Split(new string[] { "<think>" }, StringSplitOptions.None).Last(); 
 
-                Console.WriteLine($"Raw Response: {cleanResponse}");
+                Console.WriteLine($"Raw Response: {responseContent}");
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -217,23 +216,19 @@ namespace rgproj.Services
                     return $"API Error: {response.StatusCode} - {responseContent}";
                 }
 
+                var startIndex = responseContent.IndexOf("One Health Report", StringComparison.OrdinalIgnoreCase);
+                if (startIndex == -1)
+                    return "Error: Could not locate the start of the report.";
 
-                try
-                {
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    };
+                var cleanResponse = responseContent[startIndex..];
 
-                    var ollamaResponse = JsonSerializer.Deserialize<OllamaResponse>(responseContent, options);
-                    return ollamaResponse?.Response ?? "No response generated";
-                }
-                catch (JsonException ex)
-                {
-                    Console.WriteLine($"JSON parsing error: {ex.Message}");
-                    Console.WriteLine($"Received content: {responseContent}");
-                    return $"Error parsing response: {ex.Message}";
-                }
+                var footerIndex = cleanResponse.IndexOf("Prepared by:", StringComparison.OrdinalIgnoreCase);
+                if (footerIndex != -1)
+                    cleanResponse = cleanResponse[..footerIndex].Trim();
+
+                Console.WriteLine($"Cleaned Response: {cleanResponse}");
+
+                return cleanResponse;
             }
             catch (Exception ex)
             {
@@ -242,7 +237,7 @@ namespace rgproj.Services
                 return $"Generation error: {ex.Message}";
             }
         }
-    
+
 
         public static class ReportTemplates
         {

@@ -56,7 +56,8 @@ builder.Services.AddHttpClient<IAiReportService, ReportService>()
         PooledConnectionIdleTimeout = TimeSpan.FromMinutes(30),
         MaxConnectionsPerServer = 10
     });
-builder.Services.AddScoped<IReportFormatter, IReportFormatter>();
+
+builder.Services.AddScoped<IReportFormatter, ReportFormatter>();
 
 var app = builder.Build();
 

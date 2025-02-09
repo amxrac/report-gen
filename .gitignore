@@ -9,8 +9,6 @@ obj/
 .vscode/
 *.log
 app.publish/
-appsettings.Development.json
-appsettings.Local.json
 packages/
 .env	
 /Controllers/ReportsController.cs

@@ -18,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-var connectionString = builder.Configuration.GetConnectionString("RgprojConnectionString");
+var connectionString = builder.Configuration.GetConnectionString("ConnectionString");
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -56,6 +56,7 @@ builder.Services.AddHttpClient<IAiReportService, ReportService>()
         PooledConnectionIdleTimeout = TimeSpan.FromMinutes(30),
         MaxConnectionsPerServer = 10
     });
+builder.Services.AddScoped<IReportFormatter, IReportFormatter>();
 
 var app = builder.Build();
 

@@ -185,7 +185,6 @@ namespace rgproj.Services
             }
             catch (Exception ex)
             {
-                // Log error
                 return $"Error generating report: {ex.Message}";
             }
         }
@@ -199,8 +198,7 @@ namespace rgproj.Services
         {
             try
             {
-                var flaskUrl = "http://localhost:5000/generate";
-
+                var flaskUrl = "http://flaskserver-flask-api-1:5000/generate";
                 var jsonContent = JsonSerializer.Serialize(new { prompt });
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
@@ -208,27 +206,56 @@ namespace rgproj.Services
                 using var response = await _httpClient.PostAsync(flaskUrl, content);
                 var responseContent = await response.Content.ReadAsStringAsync();
 
-                Console.WriteLine($"Raw Response: {responseContent}");
-
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"API Error: {response.StatusCode} - {responseContent}");
                     return $"API Error: {response.StatusCode} - {responseContent}";
                 }
 
-                var startIndex = responseContent.IndexOf("One Health Report", StringComparison.OrdinalIgnoreCase);
+                // Parse JSON response
+                using JsonDocument document = JsonDocument.Parse(responseContent);
+                var responseText = document.RootElement.GetProperty("response").GetString();
+
+                if (string.IsNullOrEmpty(responseText))
+                {
+                    return "Error: Empty response from API";
+                }
+
+                // Remove thinking steps
+                var startIndex = responseText.IndexOf("**One Health Report**", StringComparison.OrdinalIgnoreCase);
                 if (startIndex == -1)
+                {
+                    startIndex = responseText.IndexOf("One Health Report", StringComparison.OrdinalIgnoreCase);
+                }
+
+                if (startIndex == -1)
+                {
                     return "Error: Could not locate the start of the report.";
+                }
 
-                var cleanResponse = responseContent[startIndex..];
+                var cleanResponse = responseText[startIndex..];
 
+                // Remove footer if present
                 var footerIndex = cleanResponse.IndexOf("Prepared by:", StringComparison.OrdinalIgnoreCase);
                 if (footerIndex != -1)
+                {
                     cleanResponse = cleanResponse[..footerIndex].Trim();
+                }
 
-                Console.WriteLine($"Cleaned Response: {cleanResponse}");
+                // Clean up markdown
+                cleanResponse = cleanResponse
+                    .Replace("**", "") // Remove bold markers
+                    .Replace("\u2014", "-") // Replace em dash
+                    .Replace("\n\n", "\n") // Remove double line breaks
+                    .Trim();
 
+                Console.WriteLine($"Cleaned Response Length: {cleanResponse.Length}");
                 return cleanResponse;
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"JSON Parsing Error: {ex.Message}");
+                return $"Error parsing response: {ex.Message}";
             }
             catch (Exception ex)
             {
@@ -238,11 +265,13 @@ namespace rgproj.Services
             }
         }
 
-
         public static class ReportTemplates
         {
             public const string MultiForm = @"
                 Generate a comprehensive One Health report for the following data. Be concise and focused.
+                - Do not include thoughts or reasoning steps in the response.
+                - Directly structure the report based on the required sections.
+                - Keep responses professional and concise.
 
                 Context:
                 - Date: {0}

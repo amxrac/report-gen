@@ -1,29 +1,38 @@
-﻿@using rgproj.Models;
-@model GeneratedReport;
+﻿@using rgproj.Models
+@using rgproj.Services
+@model GeneratedReport
+@inject IReportFormatter ReportFormatter
 
 @{
     ViewData["Title"] = "Report Preview";
 }
 
-<h2>Report Preview</h2>
+<div class="container">
+    <h2 class="mb-4">Report Preview</h2>
 
-<div>
-    <h4>Generated Report</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-3">Date Generated:</dt>
-        <dd class="col-sm-9">@Model.GeneratedDate.ToString("f")</dd>
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-4">
+                    <strong>Date Generated:</strong><br>
+                    @Model.GeneratedDate.ToString("f")
+                </div>
+                <div class="col-md-4">
+                    <strong>Model Used:</strong><br>
+                    @Model.ModelUsed
+                </div>
+                <div class="col-md-4">
+                    <strong>Public Visibility:</strong><br>
+                    @(Model.IsPublic ? "Yes" : "No")
+                </div>
+            </div>
+        </div>
 
-        <dt class="col-sm-3">Model Used:</dt>
-        <dd class="col-sm-9">@Model.ModelUsed</dd>
-
-        <dt class="col-sm-3">Public Visibility:</dt>
-        <dd class="col-sm-9">@(Model.IsPublic ? "Yes" : "No")</dd>
-    </dl>
-
-    <h5>Report Content:</h5>
-    <div class="border p-3">
-        @Html.Raw(Model.Content.Replace("*", "").Replace("\n", "<br>"))
+        <div class="card-body">
+            <div class="report-content">
+                @Html.Raw(ReportFormatter.FormatReport(Model.Content))
+            </div>
+        </div>
     </div>
 
     <div class="mt-3">

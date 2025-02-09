@@ -24,3 +24,46 @@ body {
 .btn-link:hover {
     text-decoration: underline !important;
 }
+
+
+.report-content {
+    font-size: 1rem;
+    line-height: 1.6;
+    padding: 1rem;
+}
+
+.report-content .report-title {
+    color: #1a365d;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #2c5282;
+}
+
+.report-content h3 {
+    color: #2c5282;
+    font-size: 1.3rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.report-content h4 {
+    color: #2d3748;
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.report-content hr {
+    margin: 2rem 0;
+    border: 0;
+    border-top: 1px solid #e2e8f0;
+}
+
+.report-content br {
+    display: block;
+    margin: 0.5rem 0;
+}

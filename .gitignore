@@ -13,6 +13,5 @@ appsettings.Development.json
 appsettings.Local.json
 packages/
 .env	
-/appsettings.json
 /Controllers/ReportsController.cs
 /Views/Reports

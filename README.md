@@ -45,7 +45,6 @@
 	dotnet run
 ```
 5. Expose the API via Ngrok:
-   	```
 ```bash
 	ngrok http 5230
 ```
@@ -53,7 +52,6 @@
 ### **Project Structure**
 
 - **ASP.NET Core**
-  	```
 ```bash
 	/Controllers
 	/Models 
@@ -65,7 +63,6 @@
 	/ViewModels
 ```
 **Flask API**
-	```
 ```bash
 	/app.py 
 	/requirements.txt
@@ -93,7 +90,6 @@
 - **Flask LLM API**
 	- Endpoint: `POST /generate`
     - Payload:
-      ```
  ```bash
 { "prompt": "Generate a One Health report based on data..." }
 ```

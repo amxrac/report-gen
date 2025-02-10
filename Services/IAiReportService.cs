@@ -103,7 +103,7 @@ namespace rgproj.Services
             return modelType.ToLower() switch
             {
                 "gemini" => await GenerateWithGemini(prompt),
-                "ollama" => await GenerateWithOllama(prompt),
+                "z" => await GenerateWithOllama(prompt),
                 _ => throw new ArgumentException("Invalid model type")
             };
         }
@@ -237,7 +237,7 @@ namespace rgproj.Services
         public static class ReportTemplates
         {
             public const string MultiForm = @"
-                Generate a comprehensive One Health report for the following data. Be concise and focused.
+                 Generate a comprehensive One Health report for the following data. Be concise and focused.
                 - Do not include thoughts or reasoning steps in the response.
                 - Directly structure the report based on the required sections.
                 - Keep responses professional and concise.
@@ -246,6 +246,7 @@ namespace rgproj.Services
                 - Date: {0}
                 - Audience: {2}
                 - Purpose: One Health assessment and recommendations
+                - Locations Covered: Identify and reference specific locations from the input data.
 
                 Input Data:
                 {1}
@@ -254,21 +255,23 @@ namespace rgproj.Services
                 1. Executive Summary (Max 300 words)
                    - Key findings
                    - Critical intersections
+                   - Affected locations
 
                 2. Risk Assessment
-                   - Environmental: [priority risks]
-                   - Animal Health: [key concerns]
-                   - Human Health: [major factors]
+                   - Environmental: [priority risks, specific locations]
+                   - Animal Health: [key concerns, specific locations]
+                   - Human Health: [major factors, specific locations]
 
                 3. Recommendations
-                   - Critical actions
-                   - Prevention strategies
-                   - Community measures
+                   - Critical actions (location-specific, if applicable)
+                   - Prevention strategies for affected regions
+                   - Community measures to mitigate risks in high-impact areas
 
                 Guidelines:
-                - Focus on critical insights
+                - Emphasize location-based trends and risks
                 - Use clear, professional language
-                - Prioritize actionable items
+                - Prioritize actionable items with geographic relevance
+   
             ";
         }
     }

@@ -41,7 +41,6 @@ builder.Services.AddSession(options => {
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-//builder.Services.AddScoped<IAiReportService, ReportService>();
 builder.Services.AddHttpClient<IAiReportService, ReportService>()
     .ConfigureHttpClient(client =>
     {
@@ -69,6 +68,12 @@ using (var scope = app.Services.CreateScope())
     var adminSeeder = scope.ServiceProvider.GetRequiredService<AdminSeeder>();
     await adminSeeder.SeedAdminAsync();
 }
+
+app.Use(async (context, next) =>
+{
+    context.Request.Headers["ngrok-skip-browser-warning"] = "true";
+    await next();
+});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

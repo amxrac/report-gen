@@ -5,8 +5,7 @@
 }
 
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Public One Health Reports</h2>
+    <div class="d-flex justify-content-end align-items-end mb-4">
         <div>
             @if (User.Identity.IsAuthenticated)
             {
@@ -18,8 +17,24 @@
             else
             {
                 <a class="btn btn-outline-primary me-2" asp-controller="Account" asp-action="Login">Login</a>
-                <a class="btn btn-primary" asp-controller="Account" asp-action="Register">Sign Up</a>
+                <a class="btn btn-primary" asp-controller="Account" asp-action="SignUp">Sign Up</a>
             }
+        </div>
+    </div>
+
+    <div class="text-center my-5">
+        <h4 class="fw-bold">Welcome to the One Health Report Generation System</h4>
+        <p class="lead">Monitoring and reporting human, environmental, veterinary, and health data for a safer world.</p>
+    </div>
+
+    <div class="row justify-content-center text-center mb-4">
+        <div class="col-md-4">
+            <h3>10+</h3>
+            <p>Registered Users</p>
+        </div>
+        <div class="col-md-4">
+            <h3>@(Model.Any() ? Model.First().GeneratedDate.ToString("MMMM dd, yyyy") : "N/A")</h3>
+            <p>Latest Report</p>
         </div>
     </div>
 
@@ -28,13 +43,19 @@
         <div class="row">
             @foreach (var report in Model)
             {
-                <div class="col-md-6 mb-4">
+                <div class="col-lg-4 col-md-6 mb-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">Report #@report.Id</h5>
-                            <p class="card-text"><small class="text-muted">Generated: @report.GeneratedDate.ToString("MMMM dd, yyyy")</small></p>
-                            <p class="card-text">@report.Content.Substring(0, Math.Min(report.Content.Length, 200))...</p>
-                            <a asp-controller="Home" asp-action="Details" asp-route-id="@report.Id" class="btn btn-sm btn-primary">Read More</a>
+                            <h5 class="card-title">One Health Report</h5>
+                            <p class="card-text">
+                                <small class="text-muted">Generated: @report.GeneratedDate.ToString("MMMM dd, yyyy")</small>
+                            </p>
+                            <p class="card-text">
+                                @report.Content.Substring(0, Math.Min(report.Content.Length, 200))...
+                            </p>
+                            <a asp-controller="Home" asp-action="Details" asp-route-id="@report.Id" class="btn btn-sm btn-primary">
+                                Read More
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -43,6 +64,6 @@
     }
     else
     {
-        <p>No public reports available.</p>
+        <p class="text-center">No public reports available.</p>
     }
 </div>

@@ -20,8 +20,8 @@ namespace rgproj.Controllers
         public async Task<IActionResult> Index()
         {
             var approvedReports = await _context.GeneratedReports
-               .Where(r => r.IsPublic) // Only fetch public reports
-               .OrderByDescending(r => r.GeneratedDate) // Show latest first
+               .Where(r => r.IsPublic)
+               .OrderByDescending(r => r.GeneratedDate) 
                .ToListAsync();
 
             return View(approvedReports);

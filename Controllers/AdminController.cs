@@ -202,11 +202,19 @@ namespace rgproj.Controllers
             var document = new ReportDocument(report);
             var pdfBytes = document.GeneratePdf();
 
-            // Generate filename
             var filename = $"OneHealth_Report_{id}_{report.GeneratedDate:yyyyMMdd}.pdf";
 
-            // Return PDF file
             return File(pdfBytes, "application/pdf", filename);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Reports()
+        {
+            var reports = await _context.GeneratedReports
+                .OrderByDescending(r => r.GeneratedDate)
+                .ToListAsync();
+            return View(reports);
         }
 
 

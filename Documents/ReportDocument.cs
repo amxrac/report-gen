@@ -2,20 +2,16 @@
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using rgproj.Models;
-
 namespace rgproj.Documents
 {
     public class ReportDocument : IDocument
     {
         private readonly GeneratedReport _report;
-
         public ReportDocument(GeneratedReport report)
         {
             _report = report ?? throw new ArgumentNullException(nameof(report));
         }
-
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
-
         public void Compose(IDocumentContainer container)
         {
             container.Page(page =>
@@ -23,7 +19,6 @@ namespace rgproj.Documents
                 page.Size(PageSizes.A4);
                 page.Margin(2, Unit.Centimetre);
                 page.DefaultTextStyle(x => x.FontSize(12));
-
                 page.Header()
                     .Column(column =>
                     {
@@ -36,7 +31,6 @@ namespace rgproj.Documents
                             .Text($"Model Used: {_report.ModelUsed}")
                             .FontSize(10).AlignCenter();
                     });
-
                 page.Content()
                     .PaddingVertical(1, Unit.Centimetre)
                     .Column(column =>
@@ -49,14 +43,12 @@ namespace rgproj.Documents
                                 .Bold()
                                 .AlignCenter();
                         }
-
                         column.Item().Text(_report.Content
                             .Replace("**", "")
                             .Replace("*", "")
                             .Replace("#", "")
                         );
                     });
-
                 page.Footer()
                     .AlignCenter()
                     .Column(column =>

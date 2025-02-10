@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Health Report System</title>
+    <title>@ViewData["Title"] - One Health Report Generation System</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/report_gen.styles.css" asp-append-version="true" />
@@ -12,7 +12,7 @@
     <div class="container-fluid dashboard-wrapper">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <h5 class="navbar-brand">Health Report System</h5>
+                <h5 class="navbar-brand">One Health Report Generation System</h5>
                 <div class="navbar-nav ms-auto align-items-center">
                     <span class="navbar-text me-3">Welcome, @ViewBag.UserName</span>
                     <span class="navbar-text me-3">Role: @ViewBag.UserRole</span>
@@ -32,10 +32,10 @@
             </div>
         }
 
-        <div class="row">
+        <div class="row mt-3">
             <div class="col-md-2 sidebar d-flex flex-column">
                 <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
-                    <a class="nav-link h5" asp-controller="Dashboard" asp-action="SubmittedForms">Submitted Forms</a>
+                    <a class="nav-link h5 mb-3" asp-controller="Dashboard" asp-action="SubmittedForms">Submitted Forms</a>
                     <a class="nav-link h5" asp-controller="Dashboard" asp-action="SubmitForm">Submit Form</a>
                 </div>
             </div>
@@ -43,25 +43,6 @@
             <div class="col-md-8 main-content">
                 @RenderBody()
             </div>
-
-            <div class="col-md-2 recent-activities-section">
-                <h5>Recent Activities</h5>
-                @* @if (ViewBag.RecentForms != null && ViewBag.RecentForms.Any()) *@
-                @* { *@
-                @*     <ul class="list-group"> *@
-                @*         @foreach (var form in ViewBag.RecentForms) *@
-                @*         { *@
-                @*             <li class="list-group-item"> *@
-                @*                 <strong>@form.Category</strong> submitted on @form.DateGenerated.ToString("g") *@
-                @*                 <p>@form.Description</p> *@
-                @*             </li> *@
-                @*         } *@
-                @*     </ul> *@
-                @* } *@
-                @* else *@
-                @* { *@
-                @*     <p>No recent submissions</p> *@
-                @* } *@
             </div>            
         </div>
     </div>

@@ -29,17 +29,6 @@ namespace rgproj.Controllers
             _context = context;
             _reportService = reportService;
         }
-
-        //public async Task<IActionResult> Index()
-        //{
-        //    var user = await _userManager.GetUserAsync(User);
-        //    if (user == null)
-        //        return RedirectToAction("Login", "Account");
-        //    var roles = await _userManager.GetRolesAsync(user);
-
-        //    ViewBag.UserRole = roles.Any() ? roles[0] : "No Role Assigned";
-        //}
-
         public async Task<IActionResult> Dashboard()
         {
             var user = await _userManager.GetUserAsync(User);

@@ -50,14 +50,12 @@ namespace rgproj.Services
             if (forms == null) throw new ArgumentNullException(nameof(forms));
             if (string.IsNullOrWhiteSpace(modelType))
                 throw new ArgumentException("Model type must be specified");
-            // Validate input
             if (forms == null || !forms.Any())
                 throw new ArgumentException("No forms selected for report generation");
 
             if (forms.Count > 10)
                 throw new ArgumentException("Maximum of 10 forms allowed per report");
 
-            // Aggregate data from all forms
             var reportData = new StringBuilder();
             int formCount = 0;
             foreach (var form in forms)
@@ -86,7 +84,6 @@ namespace rgproj.Services
                 reportData.AppendLine($"\nNote: Summarized {formCount - 5} additional reports for brevity.");
             }
 
-            // Generate unified prompt
             var prompt = string.Format(ReportTemplates.MultiForm,
                 DateTime.Now.ToString("yyyy-MM-dd"),
                 reportData.ToString(),
@@ -95,7 +92,7 @@ namespace rgproj.Services
             Console.WriteLine("Generated Prompt:");
             Console.WriteLine(prompt);
 
-            const int MaxPromptLength = 1500; // Adjusted lower for safety
+            const int MaxPromptLength = 1500; 
             if (prompt.Length > MaxPromptLength)
             {
                 var truncated = new StringBuilder(prompt.Substring(0, MaxPromptLength - 100));
@@ -103,7 +100,6 @@ namespace rgproj.Services
                 prompt = truncated.ToString();
             }
 
-            // Generate report via selected model
             return modelType.ToLower() switch
             {
                 "gemini" => await GenerateWithGemini(prompt),
@@ -198,7 +194,8 @@ namespace rgproj.Services
         {
             try
             {
-                var flaskUrl = "http://flaskserver-flask-api-1:5000/generate";
+                var flaskUrl = "http://localhost:5000/generate";
+
                 var jsonContent = JsonSerializer.Serialize(new { prompt });
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
@@ -206,56 +203,27 @@ namespace rgproj.Services
                 using var response = await _httpClient.PostAsync(flaskUrl, content);
                 var responseContent = await response.Content.ReadAsStringAsync();
 
+                Console.WriteLine($"Raw Response: {responseContent}");
+
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine($"API Error: {response.StatusCode} - {responseContent}");
                     return $"API Error: {response.StatusCode} - {responseContent}";
                 }
 
-                // Parse JSON response
-                using JsonDocument document = JsonDocument.Parse(responseContent);
-                var responseText = document.RootElement.GetProperty("response").GetString();
-
-                if (string.IsNullOrEmpty(responseText))
-                {
-                    return "Error: Empty response from API";
-                }
-
-                // Remove thinking steps
-                var startIndex = responseText.IndexOf("**One Health Report**", StringComparison.OrdinalIgnoreCase);
+                var startIndex = responseContent.IndexOf("One Health Report", StringComparison.OrdinalIgnoreCase);
                 if (startIndex == -1)
-                {
-                    startIndex = responseText.IndexOf("One Health Report", StringComparison.OrdinalIgnoreCase);
-                }
-
-                if (startIndex == -1)
-                {
                     return "Error: Could not locate the start of the report.";
-                }
 
-                var cleanResponse = responseText[startIndex..];
+                var cleanResponse = responseContent[startIndex..];
 
-                // Remove footer if present
                 var footerIndex = cleanResponse.IndexOf("Prepared by:", StringComparison.OrdinalIgnoreCase);
                 if (footerIndex != -1)
-                {
                     cleanResponse = cleanResponse[..footerIndex].Trim();
-                }
 
-                // Clean up markdown
-                cleanResponse = cleanResponse
-                    .Replace("**", "") // Remove bold markers
-                    .Replace("\u2014", "-") // Replace em dash
-                    .Replace("\n\n", "\n") // Remove double line breaks
-                    .Trim();
+                Console.WriteLine($"Cleaned Response: {cleanResponse}");
 
-                Console.WriteLine($"Cleaned Response Length: {cleanResponse.Length}");
                 return cleanResponse;
-            }
-            catch (JsonException ex)
-            {
-                Console.WriteLine($"JSON Parsing Error: {ex.Message}");
-                return $"Error parsing response: {ex.Message}";
             }
             catch (Exception ex)
             {
@@ -264,6 +232,7 @@ namespace rgproj.Services
                 return $"Generation error: {ex.Message}";
             }
         }
+
 
         public static class ReportTemplates
         {

@@ -3,10 +3,23 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Health Report System</title>
+    <title>@ViewData["Title"] - One Health Report System</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/rgproj.styles.css" asp-append-version="true" />
+    <script>
+        const getPreferredTheme = () => {
+            const savedTheme = localStorage.getItem('theme')
+            return savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        }
+
+        const setTheme = theme => {
+            document.documentElement.setAttribute('data-bs-theme', theme)
+        }
+
+        setTheme(getPreferredTheme())
+    </script>
 </head>
 <body>
     <header>
@@ -18,6 +31,10 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>                
             </div>
+            <button class="btn btn-link nav-link px-2" id="themeSwitcher">
+                <i class="bi bi-moon-stars" id="darkIcon"></i>
+                <i class="bi bi-sun" id="lightIcon" style="display:none;"></i>
+            </button>
         </nav>
     </header>
     <div class="container">
@@ -34,7 +51,7 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
                 </ul>
-                <div>&copy; 2025 - Report Generation System</div>
+                <div>&copy; 2025 - One Health Report Generation System</div>
             </div>
         </div>
     </footer>

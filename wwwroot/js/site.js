@@ -1,4 +1,34 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿document.addEventListener('DOMContentLoaded', () => {
+    const themeSwitcher = document.getElementById('themeSwitcher');
+    const darkIcon = document.getElementById('darkIcon');
+    const lightIcon = document.getElementById('lightIcon');
 
-// Write your JavaScript code.
+    const toggleTheme = () => {
+        const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        localStorage.setItem('theme', newTheme);
+
+        document.documentElement.setAttribute('data-bs-theme', newTheme);
+
+        darkIcon.style.display = newTheme === 'dark' ? 'none' : 'inline';
+        lightIcon.style.display = newTheme === 'dark' ? 'inline' : 'none';
+    };
+
+    if (themeSwitcher) {
+        themeSwitcher.addEventListener('click', toggleTheme);
+    }
+
+    const initializeTheme = () => {
+        const savedTheme = localStorage.getItem('theme');
+        const systemPreference = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        const theme = savedTheme || systemPreference;
+
+        document.documentElement.setAttribute('data-bs-theme', theme);
+
+        darkIcon.style.display = theme === 'dark' ? 'none' : 'inline';
+        lightIcon.style.display = theme === 'dark' ? 'inline' : 'none';
+    };
+
+    initializeTheme();
+});

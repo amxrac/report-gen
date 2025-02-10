@@ -1,37 +1,34 @@
-﻿using rgproj.Services;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using System.Web;
 
-public class ReportFormatter : IReportFormatter
+namespace rgproj.Services
 {
-    public string FormatReport(string content)
+    public class ReportFormatter : IReportFormatter
     {
-        if (string.IsNullOrEmpty(content))
-            return string.Empty;
+        public string FormatReport(string content)
+        {
+            if (string.IsNullOrEmpty(content))
+                return string.Empty;
 
-        var formattedContent = content
-            // Format headers
-            .Replace("### ", "<h3>")
-            .Replace("#### ", "<h4>")
+            // Escape HTML to prevent injection issues
+            content = HttpUtility.HtmlEncode(content);
 
-            // Format sections
-            .Replace("---", "<hr>")
+            // Convert basic markdown-like structure to HTML
+            content = Regex.Replace(content, @"^### (.+)$", "<h3>$1</h3>", RegexOptions.Multiline);
+            content = Regex.Replace(content, @"^#### (.+)$", "<h4>$1</h4>", RegexOptions.Multiline);
+            content = Regex.Replace(content, @"^- (.+)$", "<li>$1</li>", RegexOptions.Multiline);
+            content = Regex.Replace(content, @"^\d+\. (.+)$", "<li>$1</li>", RegexOptions.Multiline);
 
-            // Format lists
-            .Replace("\n- ", "<br>• ")
-            .Replace("\n1. ", "<br>1. ")
-            .Replace("\n2. ", "<br>2. ")
-            .Replace("\n3. ", "<br>3. ")
+            // Wrap lists in <ul> or <ol>
+            content = Regex.Replace(content, @"(<li>.*?</li>)", "<ul>$1</ul>");
+            content = Regex.Replace(content, @"(<ul><li>\d+\..*?</li></ul>)", "<ol>$1</ol>");
 
-            // Format line breaks
-            .Replace("\n", "<br>");
+            // Paragraph formatting
+            content = Regex.Replace(content, @"\n{2,}", "</p><p>");
+            content = $"<p>{content}</p>";
 
-        // Add closing tags for headers
-        formattedContent = Regex.Replace(formattedContent, "<h3>(.*?)<br>", "<h3>$1</h3>");
-        formattedContent = Regex.Replace(formattedContent, "<h4>(.*?)<br>", "<h4>$1</h4>");
-
-        return $@"
-            <div class='formatted-report'>
-                {formattedContent}
-            </div>";
+            // Final formatting
+            return $"<div class='formatted-report'>{content}</div>";
+        }
     }
 }

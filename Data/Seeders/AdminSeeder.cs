@@ -18,7 +18,7 @@ namespace rgproj.Data.Seeders
 
         public async Task SeedAdminAsync()
         {
-            var adminEmail = "admin@example.com";
+            var adminEmail = "admin@admin.com";
             var adminPassword = "SecurePassword123!";
 
             if (await _userManager.FindByEmailAsync(adminEmail) == null)

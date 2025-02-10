@@ -40,18 +40,21 @@
 	python app.py
 ```
 4. Start the ASP.NET Core application:
-	```bash
+   		```
+```bash
 	dotnet run
 ```
 5. Expose the API via Ngrok:
-	```bash
+   	```
+```bash
 	ngrok http 5230
 ```
 
 ### **Project Structure**
 
 - **ASP.NET Core**
-	```bash
+  	```
+```bash
 	/Controllers
 	/Models 
 	/Services 
@@ -62,6 +65,7 @@
 	/ViewModels
 ```
 **Flask API**
+	```
 ```bash
 	/app.py 
 	/requirements.txt
@@ -89,11 +93,13 @@
 - **Flask LLM API**
 	- Endpoint: `POST /generate`
     - Payload:
-	 ```bash
+      ```
+ ```bash
 { "prompt": "Generate a One Health report based on data..." }
 ```
-	Response:
-	```bash
+Response:
+	```
+```bash
 { "response": "Generated report text..." }
 ```
 

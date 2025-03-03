@@ -13,3 +13,4 @@ packages/
 .env	
 /Controllers/ReportsController.cs
 /Views/Reports
+/appsettings.json

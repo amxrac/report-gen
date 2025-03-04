@@ -49,7 +49,7 @@
 1. **Clone the repositories**
 ```
    # Main application
-   git clone https://github.com/amxrac/rgproj/
+   git clone https://github.com/amxrac/report-gen/
    cd digital-one-health
    
    # Flask LLM API Gateway
@@ -72,7 +72,7 @@ python app.py
 ```
 5. Run the ASP.NET Core application:
 ```
-   cd rgproj
+   cd report-gen
    dotnet run
 ```
 6. Expose via Ngrok (optional)

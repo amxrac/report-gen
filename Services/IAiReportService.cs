@@ -104,7 +104,7 @@ namespace rgproj.Services
             {
                 "gemini" => await GenerateWithGemini(prompt),
                 "z" => await GenerateWithOllama(prompt),
-                _ => throw new ArgumentException("Invalid model type")
+                _ => await GenerateWithOllama(prompt)
             };
         }
 
@@ -145,20 +145,27 @@ namespace rgproj.Services
         private async Task<string> GenerateWithGemini(string prompt)
         {
             var apiKey = _config["GeminiApi:ApiKey"];
-            var url = $"https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key={apiKey}";
+
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                Console.WriteLine("Gemini API key is missing");
+                return "Error: Gemini API key is not configured.";
+            }
+
+            var url = $"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key={apiKey}";
 
             var request = new
             {
                 contents = new[]
                 {
-                    new
-                    {
-                        parts = new[]
-                        {
-                            new { text = prompt }
-                        }
-                    }
-                },
+            new
+            {
+                parts = new[]
+                {
+                    new { text = prompt }
+                }
+            }
+        },
                 generationConfig = new
                 {
                     temperature = 0.7,
@@ -168,23 +175,42 @@ namespace rgproj.Services
 
             try
             {
+                Console.WriteLine("Sending request to Gemini API...");
                 var response = await _httpClient.PostAsJsonAsync(url, request);
-                response.EnsureSuccessStatusCode();
+
+                // Log response status for debugging
+                Console.WriteLine($"Gemini API response status: {response.StatusCode}");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Gemini API error: {errorContent}");
+                    return $"Error calling Gemini API: {response.StatusCode} - {errorContent}";
+                }
 
                 var jsonResponse = await response.Content.ReadFromJsonAsync<JsonDocument>();
-                return jsonResponse?.RootElement
-                    .GetProperty("candidates")[0]
-                    .GetProperty("content")
-                    .GetProperty("parts")[0]
-                    .GetProperty("text")
-                    .GetString() ?? "No content generated";
+
+                // Properly navigate the response structure based on Gemini API documentation
+                if (jsonResponse != null &&
+                    jsonResponse.RootElement.TryGetProperty("candidates", out var candidates) &&
+                    candidates.GetArrayLength() > 0 &&
+                    candidates[0].TryGetProperty("content", out var content) &&
+                    content.TryGetProperty("parts", out var parts) &&
+                    parts.GetArrayLength() > 0 &&
+                    parts[0].TryGetProperty("text", out var textElement))
+                {
+                    return textElement.GetString() ?? "No content generated";
+                }
+
+                return "Unable to parse Gemini API response";
             }
             catch (Exception ex)
             {
-                return $"Error generating report: {ex.Message}";
+                Console.WriteLine($"Exception in GenerateWithGemini: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                return $"Error generating report with Gemini: {ex.Message}";
             }
         }
-
         private class OllamaResponse
         {
             public string? Response { get; set; }
